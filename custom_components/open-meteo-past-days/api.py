@@ -1,4 +1,3 @@
-"""Sample API Client."""
 from __future__ import annotations
 
 import asyncio
@@ -7,50 +6,49 @@ import socket
 import aiohttp
 import async_timeout
 
+from .const import LOGGER
 
-class IntegrationBlueprintApiClientError(Exception):
+
+class OpenMeteoPastDaysApiClientError(Exception):
     """Exception to indicate a general API error."""
 
 
-class IntegrationBlueprintApiClientCommunicationError(
-    IntegrationBlueprintApiClientError
-):
+class OpenMeteoPastDaysApiClientCommunicationError(OpenMeteoPastDaysApiClientError):
     """Exception to indicate a communication error."""
 
 
-class IntegrationBlueprintApiClientAuthenticationError(
-    IntegrationBlueprintApiClientError
-):
+class OpenMeteoPastDaysApiClientAuthenticationError(OpenMeteoPastDaysApiClientError):
     """Exception to indicate an authentication error."""
 
 
-class IntegrationBlueprintApiClient:
-    """Sample API Client."""
+class OpenMeteoPastDaysApiClient:
+    """Open-Meteo API Client"""
 
     def __init__(
         self,
-        username: str,
-        password: str,
+        latitude: str,
+        longitude: str,
+        max_days: int,
+        variables,
         session: aiohttp.ClientSession,
     ) -> None:
-        """Sample API Client."""
-        self._username = username
-        self._password = password
         self._session = session
+        self._latitude = latitude
+        self._longitude = longitude
+        self._max_days = max_days
+        self._variables = variables
 
     async def async_get_data(self) -> any:
-        """Get data from the API."""
+        """Get Data"""
         return await self._api_wrapper(
-            method="get", url="https://jsonplaceholder.typicode.com/posts/1"
-        )
-
-    async def async_set_title(self, value: str) -> any:
-        """Get data from the API."""
-        return await self._api_wrapper(
-            method="patch",
-            url="https://jsonplaceholder.typicode.com/posts/1",
-            data={"title": value},
-            headers={"Content-type": "application/json; charset=UTF-8"},
+            method="get",
+            url="https://api.open-meteo.com/v1/forecast?"
+            + f"latitude={self._latitude}"
+            + f"&longitude={self._longitude}"
+            + f"&daily={','.join(self._variables)}"
+            + "&timezone=auto"
+            + f"&past_days={self._max_days}"
+            + "&forecast_days=1",
         )
 
     async def _api_wrapper(
@@ -70,21 +68,22 @@ class IntegrationBlueprintApiClient:
                     json=data,
                 )
                 if response.status in (401, 403):
-                    raise IntegrationBlueprintApiClientAuthenticationError(
+                    raise OpenMeteoPastDaysApiClientAuthenticationError(
                         "Invalid credentials",
                     )
                 response.raise_for_status()
                 return await response.json()
 
         except asyncio.TimeoutError as exception:
-            raise IntegrationBlueprintApiClientCommunicationError(
+            raise OpenMeteoPastDaysApiClientCommunicationError(
                 "Timeout error fetching information",
             ) from exception
         except (aiohttp.ClientError, socket.gaierror) as exception:
-            raise IntegrationBlueprintApiClientCommunicationError(
+            LOGGER.error(exception)
+            raise OpenMeteoPastDaysApiClientCommunicationError(
                 "Error fetching information",
             ) from exception
         except Exception as exception:  # pylint: disable=broad-except
-            raise IntegrationBlueprintApiClientError(
+            raise OpenMeteoPastDaysApiClientError(
                 "Something really wrong happened!"
             ) from exception

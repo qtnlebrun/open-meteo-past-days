@@ -1,0 +1,12 @@
+{
+  "domain": "open-meteo-past-days",
+  "name": "Open-Meteo Past days",
+  "codeowners": [
+    "@qtnlebrun"
+  ],
+  "config_flow": true,
+  "documentation": "https://github.com/qtnlebrun/open-meteo-past-days",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/qtnlebrun/open-meteo-past-days/issues",
+  "version": "0.0.0"
+}

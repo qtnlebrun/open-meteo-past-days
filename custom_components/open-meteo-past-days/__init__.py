@@ -1,23 +1,28 @@
-"""Custom integration to integrate integration_blueprint with Home Assistant.
+"""Custom integration to integrate open-meteo-past-days with Home Assistant.
 
 For more details about this integration, please refer to
-https://github.com/ludeeus/integration_blueprint
+https://github.com/qtnlebrun/open-meteo-past-days
 """
 from __future__ import annotations
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import CONF_PASSWORD, CONF_USERNAME, Platform
+from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
-from .api import IntegrationBlueprintApiClient
-from .const import DOMAIN
-from .coordinator import BlueprintDataUpdateCoordinator
+from homeassistant.const import (
+    CONF_LATITUDE,
+    CONF_LONGITUDE,
+    CONF_LOCATION,
+    CONF_NAME,
+)
+
+from .api import OpenMeteoPastDaysApiClient
+from .const import CONF_MAX_DAYS, CONF_VARIABLES, DOMAIN
+from .coordinator import OpenMeteoPastDaysDataUpdateCoordinator
 
 PLATFORMS: list[Platform] = [
     Platform.SENSOR,
-    Platform.BINARY_SENSOR,
-    Platform.SWITCH,
 ]
 
 
@@ -25,11 +30,15 @@ PLATFORMS: list[Platform] = [
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up this integration using UI."""
     hass.data.setdefault(DOMAIN, {})
-    hass.data[DOMAIN][entry.entry_id] = coordinator = BlueprintDataUpdateCoordinator(
+    hass.data[DOMAIN][
+        entry.entry_id
+    ] = coordinator = OpenMeteoPastDaysDataUpdateCoordinator(
         hass=hass,
-        client=IntegrationBlueprintApiClient(
-            username=entry.data[CONF_USERNAME],
-            password=entry.data[CONF_PASSWORD],
+        client=OpenMeteoPastDaysApiClient(
+            latitude=entry.data[CONF_LOCATION][CONF_LATITUDE],
+            longitude=entry.data[CONF_LOCATION][CONF_LONGITUDE],
+            max_days=int(entry.data[CONF_MAX_DAYS]),
+            variables=entry.data[CONF_VARIABLES],
             session=async_get_clientsession(hass),
         ),
     )
