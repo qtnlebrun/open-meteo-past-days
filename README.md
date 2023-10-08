@@ -9,11 +9,16 @@
 
 [![Community Forum][forum-shield]][forum]
 
-**This integration will set up the following platforms.**
+This integration provides sensors for selected variables for past days and today Forecast
 
-Platform | Description
--- | --
-`sensor` | Show info for past days
+**Available variables :**
+
+Variable | Sensor name | Description
+-- | -- | --
+`Maximum Temperature` <br> `Minimum Temperature`| sensor.today_maximum_temperature or sensor.d_X_maximum_temperature <br> sensor.today_minimum_temperature or sensor.d_X_minimum_temperature | Maximum and minimum daily air temperature at 2 meters above ground
+`Precipitation Sum` | sensor.today_precipitation_sum or sensor.d_X_precipitation_sum | Sum of daily precipitation (including rain, showers and snowfall)
+`Rain Sum` | sensor.today_maximum_temperature or sensor.d_X_maximum_temperature | Sum of daily rain
+`Reference Evapotranspiration` | sensor.today_maximum_temperature or sensor.d_X_maximum_temperature | Daily sum of ET₀ Reference Evapotranspiration of a well watered grass field
 
 ## Installation
 
@@ -26,8 +31,6 @@ Platform | Description
 1. In the HA UI go to "Configuration" -> "Integrations" click "+" and search for "Open-Meteo Past days"
 
 ## Configuration is done in the UI
-
-<!---->
 
 ## Contributions are welcome!
 
