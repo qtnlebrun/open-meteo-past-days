@@ -42,4 +42,10 @@ VAR_NAMES = {
         "native_unit_of_measurement": UnitOfPrecipitationDepth.MILLIMETERS,
         "state_class": SensorStateClass.MEASUREMENT,
     },
+    "et0_fao_evapotranspiration": {
+        "label": "Reference Evapotranspiration",
+        "device_class": SensorDeviceClass.PRECIPITATION,
+        "native_unit_of_measurement": UnitOfPrecipitationDepth.MILLIMETERS,
+        "state_class": SensorStateClass.MEASUREMENT,
+    },
 }
